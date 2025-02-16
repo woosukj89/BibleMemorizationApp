@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { bibleData } from '@/utils/bibleData';
 
 type RootStackParamList = {
   Home: undefined;
-  Memorization: { book: string; chapter: number };
+  SelectBook: undefined;
+  Search: undefined;
+  History: undefined;
 };
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -15,75 +16,59 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const [selectedBook, setSelectedBook] = useState<string | null>(null);
-
-  const renderBookSelection = () => (
-    <>
-      <Text style={styles.title}>Select a Book</Text>
-      {Object.keys(bibleData).map(book => (
-        <TouchableOpacity
-          key={book}
-          style={styles.button}
-          onPress={() => setSelectedBook(book)}
-        >
-          <Text style={styles.buttonText}>{book}</Text>
-        </TouchableOpacity>
-      ))}
-    </>
-  );
-
-  const renderChapterSelection = () => (
-    <>
-      <TouchableOpacity style={styles.backButton} onPress={() => setSelectedBook(null)}>
-        <Text style={styles.backButtonText}>Back to Books</Text>
-      </TouchableOpacity>
-      <Text style={styles.title}>Select a Chapter from {selectedBook}</Text>
-      {Object.keys(bibleData[selectedBook!]).map(chapter => (
-        <TouchableOpacity
-          key={chapter}
-          style={styles.button}
-          onPress={() => navigation.navigate('Memorization', { book: selectedBook!, chapter: parseInt(chapter) })}
-        >
-          <Text style={styles.buttonText}>Chapter {chapter}</Text>
-        </TouchableOpacity>
-      ))}
-    </>
-  );
-
   return (
-    <ScrollView style={styles.container}>
-      {selectedBook ? renderChapterSelection() : renderBookSelection()}
-    </ScrollView>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Bible Memorization</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('SelectBook')}
+        >
+          <Text style={styles.buttonText}>Select a Chapter</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('Search')}
+        >
+          <Text style={styles.buttonText}>Search Verses</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate('History')}
+        >
+          <Text style={styles.buttonText}>History</Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: 'center',
     padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 20,
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  buttonContainer: {
+    alignItems: 'center',
   },
   button: {
     backgroundColor: '#007AFF',
     padding: 15,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 20,
+    width: '80%',
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
-  },
-  backButton: {
-    marginBottom: 20,
-  },
-  backButtonText: {
-    color: '#007AFF',
-    fontSize: 18,
   },
 });
 

@@ -68,6 +68,11 @@ export const bibleData: BibleData = {
     }
 }
 
-export const getVerseText = (book: string, chapter: number, verse: number): string => {
+export const getVerseText = (book: string, chapter: number, verse: number, endVerse?: number): string => {
   return bibleData[book][chapter].find(v => v.verse === verse)?.text || '';
+};
+
+export const getLastVerse = (book: string, chapter: number): number => {
+  const chapterArray = bibleData[book][chapter];
+  return chapterArray[chapterArray.length - 1].verse;
 };
