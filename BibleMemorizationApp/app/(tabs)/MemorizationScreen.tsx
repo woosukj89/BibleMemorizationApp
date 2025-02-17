@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Button, StyleSheet, Pressable, Text, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { getLastVerse, getVerseText } from '@/utils/bibleData';
 import { hideWords } from '@/utils/wordHiding';
@@ -96,7 +95,7 @@ const styles = StyleSheet.create({
   },
   pressableText: {
     color: 'white',
-    backgroundColor: '#007AFF',
+    backgroundColor: '#A4C3D2',
     padding: 10,
     borderRadius: 5,
     textAlign: 'center',

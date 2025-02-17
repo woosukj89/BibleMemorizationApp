@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { StackNavigationProp } from '@react-navigation/stack';
 import { bibleData } from '@/utils/bibleData';
 import { saveToHistory } from '@/utils/history';
+import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
   SelectBook: undefined;
@@ -18,10 +19,11 @@ interface SelectBookScreenProps {
 
 const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const renderBookSelection = () => (
     <>
-      <Text style={styles.title}>Select a Book</Text>
+      <Text style={styles.title}>{t('selectChapterPage.selectBook')}</Text>
       {Object.keys(bibleData).map(book => (
         <TouchableOpacity
           key={book}
@@ -37,9 +39,9 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
   const renderChapterSelection = () => (
     <>
       <TouchableOpacity style={styles.backButton} onPress={() => setSelectedBook(null)}>
-        <Text style={styles.backButtonText}>Back to Books</Text>
+        <Text style={styles.backButtonText}>{t('selectChapterPage.backToBooks')}</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>Select a Chapter from {selectedBook}</Text>
+      <Text style={styles.title}>{t('selectChapterPage.selectChapterFrom', { book: selectedBook })}</Text>
       {Object.keys(bibleData[selectedBook!]).map(chapter => (
         <TouchableOpacity
           key={chapter}
@@ -49,7 +51,7 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
             saveToHistory(selectedBook!, parseInt(chapter))
           }}
         >
-          <Text style={styles.buttonText}>Chapter {chapter}</Text>
+          <Text style={styles.buttonText}>{t('selectChapterPage.chapter', { chapter: chapter })}</Text>
         </TouchableOpacity>
       ))}
     </>
@@ -73,7 +75,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#78A2CC',
     padding: 15,
     borderRadius: 5,
     marginBottom: 10,

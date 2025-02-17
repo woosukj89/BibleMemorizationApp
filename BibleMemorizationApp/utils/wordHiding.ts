@@ -9,19 +9,19 @@ export const hideWords = (text: string, difficulty: string): WordObject[] => {
 
   switch (difficulty) {
     case 'easy':
-      percentToHide = 0.1;
+      percentToHide = 0.2;
       break;
     case 'medium':
-      percentToHide = 0.45;
+      percentToHide = 0.50;
       break;
     case 'hard':
-      percentToHide = 0.9;
+      percentToHide = 0.8;
       break;
     case 'full':
       percentToHide = 1;
       break;
     default:
-      percentToHide = 0.1;
+      percentToHide = 0.5;
   }
 
   const wordsToHide = Math.max(1, Math.floor(words.length * percentToHide));

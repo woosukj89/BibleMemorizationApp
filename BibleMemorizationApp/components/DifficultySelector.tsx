@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 interface DifficultySelectorProps {
@@ -7,6 +8,7 @@ interface DifficultySelectorProps {
 }
 
 const DifficultySelector: React.FC<DifficultySelectorProps> = ({ difficulty, setDifficulty }) => {
+  const { t } = useTranslation();
   const difficulties = ['easy', 'medium', 'hard', 'full'];
 
   const getBackgroundColor = (level: string) => {
@@ -26,7 +28,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({ difficulty, set
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Difficulty:</Text>
+      <Text style={styles.label}>{t('memorizationPage.difficulty')}</Text>
       <View style={styles.buttonContainer}>
         {difficulties.map((level) => (
           <TouchableOpacity
@@ -34,7 +36,7 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({ difficulty, set
             style={[styles.button, { backgroundColor: getBackgroundColor(level) }, difficulty === level && styles.activeButton]}
             onPress={() => setDifficulty(level)}
           >
-            <Text style={styles.buttonText}>{level.charAt(0).toUpperCase() + level.slice(1)}</Text>
+            <Text style={styles.buttonText}>{t(`memorizationPage.${level}`)}</Text>
           </TouchableOpacity>
         ))}
       </View>

@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useTranslation } from 'react-i18next';
 
 const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     loadHistory();
@@ -58,7 +60,7 @@ const HistoryScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Recent History</Text>
+      <Text style={styles.title}>{t('historyPage.recentHistory')}</Text>
       {history.length > 0 ? (
         <FlatList
           data={history}
@@ -66,7 +68,7 @@ const HistoryScreen = ({ navigation }) => {
           keyExtractor={(item, index) => index.toString()}
         />
       ) : (
-        <Text style={styles.noHistoryText}>No history available</Text>
+        <Text style={styles.noHistoryText}>{t('historyPage.noHistory')}</Text>
       )}
     </View>
   );

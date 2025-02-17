@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from '
 import { Picker } from '@react-native-picker/picker';
 import { bibleData, getLastVerse } from '@/utils/bibleData';
 import { saveToHistory } from '@/utils/history';
+import { useTranslation } from 'react-i18next';
 
 const SearchScreen = ({ navigation }) => {
   const [selectedBook, setSelectedBook] = useState('');
@@ -10,6 +11,7 @@ const SearchScreen = ({ navigation }) => {
   const [startVerse, setStartVerse] = useState('');
   const [endVerse, setEndVerse] = useState('');
   const [errors, setErrors] = useState({ book: false, chapter: false, verse: false });
+  const { t } = useTranslation();
 
   const books = Object.keys(bibleData);
   const chapters = selectedBook ? Object.keys(bibleData[selectedBook]) : [];
@@ -55,7 +57,7 @@ const SearchScreen = ({ navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.label}>Book:</Text>
+      <Text style={styles.label}>{t('searchPage.book') + ':'}</Text>
       <Animated.View style={{ transform: [{ translateX: bookRef.current }] }}>
         <Picker
           selectedValue={selectedBook}
@@ -68,14 +70,14 @@ const SearchScreen = ({ navigation }) => {
           }}
           style={[styles.picker, errors.book && styles.errorPicker]}
         >
-          <Picker.Item label="Select a book" value="" />
+          <Picker.Item label={t('searchPage.selectBook')} value="" />
           {books.map((book) => (
             <Picker.Item key={book} label={book} value={book} />
           ))}
         </Picker>
       </Animated.View>
 
-      <Text style={styles.label}>Chapter:</Text>
+      <Text style={styles.label}>{t('searchPage.chapter') + ':'}</Text>
       <Animated.View style={{ transform: [{ translateX: chapterRef.current }] }}>
         <Picker
           selectedValue={selectedChapter}
@@ -88,7 +90,7 @@ const SearchScreen = ({ navigation }) => {
           enabled={!!selectedBook}
           style={[styles.picker, !!selectedBook && errors.chapter && styles.errorPicker]}
         >
-          <Picker.Item label="Select a chapter" value="" />
+          <Picker.Item label={t('searchPage.selectChapter')} value="" />
           {chapters.map((chapter) => (
             <Picker.Item key={chapter} label={chapter} value={chapter} />
           ))}
@@ -96,7 +98,7 @@ const SearchScreen = ({ navigation }) => {
       </Animated.View>
 
       <Animated.View style={{ transform: [{ translateX: verseRef.current }] }}>
-      <Text style={styles.label}>Start Verse:</Text>
+      <Text style={styles.label}>{t('searchPage.startVerse') + ':'}</Text>
       <Picker
         selectedValue={startVerse}
         onValueChange={(itemValue) => {
@@ -107,27 +109,27 @@ const SearchScreen = ({ navigation }) => {
         enabled={!!selectedChapter}
         style={[styles.picker, !!selectedChapter && errors.verse && styles.errorPicker]}
       >
-        <Picker.Item label="Select start verse" value="" />
+        <Picker.Item label={t('searchPage.selectStartVerse')} value="" />
         {verses.map((verse) => (
           <Picker.Item key={verse} label={verse.toString()} value={verse.toString()} />
         ))}
       </Picker>
       </Animated.View>
 
-      <Text style={styles.label}>End Verse (optional):</Text>
+      <Text style={styles.label}>{t('searchPage.endVerse') + ':'}</Text>
       <Picker
         selectedValue={endVerse}
         onValueChange={(itemValue) => setEndVerse(itemValue)}
         enabled={!!startVerse}
       >
-        <Picker.Item label="Select end verse" value="" />
+        <Picker.Item label={t('searchPage.selectEndVerse')} value="" />
         {verses.filter((v) => v >= parseInt(startVerse)).map((verse) => (
           <Picker.Item key={verse} label={verse.toString()} value={verse.toString()} />
         ))}
       </Picker>
 
       <TouchableOpacity style={styles.button} onPress={handleSearch}>
-        <Text style={styles.buttonText}>Search</Text>
+        <Text style={styles.buttonText}>{t('searchPage.search')}</Text>
       </TouchableOpacity>
     </ScrollView>
   );

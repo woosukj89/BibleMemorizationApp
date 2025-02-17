@@ -1,6 +1,8 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import i18n from '@/hooks/i18n';
+import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
   Home: undefined;
@@ -16,27 +18,29 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
+  i18n.changeLanguage('ko');
+  const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Bible Memorization</Text>
+      <Text style={styles.title}>{t('appName')}</Text>
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('SelectBook')}
         >
-          <Text style={styles.buttonText}>Select a Chapter</Text>
+          <Text style={styles.buttonText}>{t('selectChapter')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('Search')}
         >
-          <Text style={styles.buttonText}>Search Verses</Text>
+          <Text style={styles.buttonText}>{t('searchVerses')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate('History')}
         >
-          <Text style={styles.buttonText}>History</Text>
+          <Text style={styles.buttonText}>{t('history')}</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -59,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#78A2CC',
     padding: 15,
     borderRadius: 5,
     marginBottom: 20,

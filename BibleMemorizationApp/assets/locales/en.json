@@ -1,0 +1,34 @@
+{
+   "appName": "Bible Memorization",
+    "selectChapter": "Select a Chapter",
+   "searchVerses": "Search Verses",
+    "history": "History",
+   "selectChapterPage": {
+    "selectBook": "Select a Book",
+    "selectChapterFrom": "Select a Chapter from {{book}}",
+    "backToBooks": "Back to Books"
+   },
+   "searchPage": {
+   "book": "Book",
+   "chapter": "Chapter",
+   "selectBook": "Select book",
+   "selectChapter": "Select Chapter",
+   "startVerse": "Start Verse",
+   "endVerse": "End Verse",
+   "selectStartVerse": "Select start verse",
+   "selectEndVerse": "Select end verse (optional)",
+   "search": "Search"
+   },
+   "historyPage": {
+    "recentHistory": "Recent History",
+    "noHistory": "No history available"
+   },
+   "memorizationPage": {
+    "difficulty": "Difficulty",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard",
+    "full": "Full",
+    "verse": "Verse {{verse}}"
+   }
+}

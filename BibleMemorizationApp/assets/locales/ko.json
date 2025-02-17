@@ -1,0 +1,36 @@
+{
+"appName": "성경 암기",
+"selectChapter": "통 암기",
+"searchVerses": "구절 찾기",
+"history": "열람 내역",
+"selectChapterPage": {
+"selectBook": "책 선택",
+"selectChapter": "장 선택",
+"selectChapterFrom": "'{{book}}'에서 장 선택",
+"backToBooks": "책 목록으로 돌아가기",
+"chapter": "{{chapter}}장"
+},
+"searchPage": {
+"book": "책",
+"chapter": "장",
+   "selectBook": "책 선택",
+   "selectChapter": "장 선택",
+"startVerse": "시작 구절",
+"endVerse": "마지막 구절",
+"selectStartVerse": "시작 구절 선택",
+"selectEndVerse": "마지막 구절 선택 (옵션)",
+"search": "검색"
+},
+"historyPage": {
+"recentHistory": "최근 검색 목록",
+"noHistory": "검색 기록이 없습니다"
+},
+"memorizationPage": {
+"difficulty": "난이도",
+"easy": "쉬움",
+"medium": "보통",
+"hard": "어려움",
+"full": "전체",
+"verse": "{{verse}}절"
+}
+}

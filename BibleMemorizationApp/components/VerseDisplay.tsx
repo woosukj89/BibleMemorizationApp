@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { View, Text, StyleSheet } from 'react-native';
 
 export interface WordObject {
@@ -11,21 +12,24 @@ interface VerseDisplayProps {
   verseNumber: number;
 }
 
-const VerseDisplay: React.FC<VerseDisplayProps> = ({ words, verseNumber }) => (
-  <View style={styles.container}>
-    <Text style={styles.verseNumber}>Verse {verseNumber}</Text>
-    <View style={styles.textContainer}>
-      {words.map((wordObj, index) => (
-        <View key={index} style={styles.wordContainer}>
-          <Text style={[styles.word, wordObj.isHidden && styles.hiddenWord]}>
-            {wordObj.word}
-          </Text>
-          {wordObj.isHidden && <View style={styles.hiddenBackground} />}
-        </View>
-      ))}
+const VerseDisplay: React.FC<VerseDisplayProps> = ({ words, verseNumber }) => {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.container}>
+      <Text style={styles.verseNumber}>{t('memorizationPage.verse', { verse: verseNumber })}</Text>
+      <View style={styles.textContainer}>
+        {words.map((wordObj, index) => (
+          <View key={index} style={styles.wordContainer}>
+            <Text style={[styles.word, wordObj.isHidden && styles.hiddenWord]}>
+              {wordObj.word}
+            </Text>
+            {wordObj.isHidden && <View style={styles.hiddenBackground} />}
+          </View>
+        ))}
+      </View>
     </View>
-  </View>
-);
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
