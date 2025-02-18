@@ -45,7 +45,8 @@ const HistoryScreen = ({ navigation }) => {
           onPress={() => navigation.navigate('Memorization', {
             book: item.book,
             chapter: item.chapter,
-            verse: item.verse,
+            verse: item.startVerse,
+            endVerse: item.endVerse,
           })}
         >
           <Text>{displayText}</Text>

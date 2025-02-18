@@ -5,7 +5,6 @@ import MemorizationScreen from './MemorizationScreen';
 import SearchScreen from './SearchScreen';
 import HistoryScreen from './HistoryScreen';
 import SelectBookScreen from './SelectBookScreen';
-import i18n from '@/hooks/i18n';
 
 type RootStackParamList = {
   Home: undefined;
