@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import i18n from '@/hooks/i18n';
 import { useTranslation } from 'react-i18next';
 
 type RootStackParamList = {
@@ -18,7 +17,6 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  i18n.changeLanguage('ko');
   const { t } = useTranslation();
   return (
     <SafeAreaView style={styles.container}>

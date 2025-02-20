@@ -34,7 +34,7 @@ const LANGUAGE_DETECTOR: LanguageDetectorAsyncModule = {
 };
 
 i18n
-  .use(LANGUAGE_DETECTOR)
+  // .use(LANGUAGE_DETECTOR)
   .use(initReactI18next)
   .init({
     resources: {
