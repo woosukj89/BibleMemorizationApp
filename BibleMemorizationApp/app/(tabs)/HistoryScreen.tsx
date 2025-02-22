@@ -30,13 +30,13 @@ const HistoryScreen = ({ navigation }) => {
   };
 
   const renderHistoryItem = ({ item, index }) => {
-    const verseRange = item.startVerse && item.endVerse
+    const verseRange = item.startVerse && item.endVerse && parseInt(item.endVerse) > parseInt(item.startVerse)
       ? `:${item.startVerse}-${item.endVerse}`
       : item.startVerse
         ? `:${item.startVerse}`
         : '';
 
-    const displayText = `${item.book} ${item.chapter}${verseRange}`;
+    const displayText = `${t(`bible.${item.book}`)} ${item.chapter}${verseRange}`;
 
     return (
       <View style={styles.historyItem}>

@@ -24,7 +24,7 @@ export const hideWords = (text: string, difficulty: string): WordObject[] => {
       percentToHide = 0.5;
   }
 
-  const wordsToHide = Math.max(1, Math.floor(words.length * percentToHide));
+  const wordsToHide = Math.max(1, difficulty == 'easy' ? Math.ceil(words.length * percentToHide) : Math.floor(words.length * percentToHide));
   const hiddenIndices = new Set();
 
   while (hiddenIndices.size < wordsToHide) {

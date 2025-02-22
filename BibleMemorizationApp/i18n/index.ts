@@ -15,13 +15,12 @@ const LANGUAGE_DETECTOR: LanguageDetectorAsyncModule = {
     AsyncStorage.getItem('user-language', (err, language) => {
       if (err || !language) {
         if (err) {
-          console.log('Error fetching Languages from AsyncStorage ', err);
+          console.error('Error fetching Languages from AsyncStorage ', err);
         } else {
-          console.log('No language is set, choosing Korean as fallback');
+          console.error('No language is set, choosing English as fallback');
         }
-        const findBestAvailableLanguage =
-          getLocales()[0].languageCode || 'en';
-        callback(findBestAvailableLanguage);
+        const findBestAvailableLanguage = getLocales()[0].languageCode || 'en';
+        callback(LANG_CODES.includes(findBestAvailableLanguage) ? findBestAvailableLanguage : 'en');
         return;
       }
       callback(language);
@@ -34,7 +33,7 @@ const LANGUAGE_DETECTOR: LanguageDetectorAsyncModule = {
 };
 
 i18n
-  // .use(LANGUAGE_DETECTOR)
+  .use(LANGUAGE_DETECTOR)
   .use(initReactI18next)
   .init({
     resources: {

@@ -1,21 +1,21 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { bibleData, getLastVerse } from '@/utils/bibleData';
 import { saveToHistory } from '@/utils/history';
 import { useTranslation } from 'react-i18next';
+import { getBooks, getChapters, getLastVerseNumber, getVerseNumbers } from '@/db/databaseService';
 
 const SearchScreen = ({ navigation }) => {
   const [selectedBook, setSelectedBook] = useState('');
   const [selectedChapter, setSelectedChapter] = useState(0);
-  const [startVerse, setStartVerse] = useState('');
-  const [endVerse, setEndVerse] = useState('');
+  const [startVerse, setStartVerse] = useState(0);
+  const [endVerse, setEndVerse] = useState(0);
   const [errors, setErrors] = useState({ book: false, chapter: false, verse: false });
   const { t } = useTranslation();
 
-  const books = Object.keys(bibleData);
-  const chapters = selectedBook ? Object.keys(bibleData[selectedBook]) : [];
-  const verses = selectedChapter ? [...Array(bibleData[selectedBook][selectedChapter].length).keys()].map(i => i + 1) : [];
+  const books = getBooks();
+  const chapters = selectedBook ? getChapters(selectedBook) : [];
+  const verses = selectedChapter ? getVerseNumbers(selectedBook, selectedChapter) : [];
   const bookRef = useRef(new Animated.Value(0));
   const chapterRef = useRef(new Animated.Value(0));
   const verseRef = useRef(new Animated.Value(0));
@@ -43,15 +43,15 @@ const SearchScreen = ({ navigation }) => {
     if (selectedBook && selectedChapter && !startVerse) shakeAnimation(verseRef);
 
     if (selectedBook && selectedChapter && startVerse) {
-      const lastVerse = endVerse ? parseInt(endVerse) : getLastVerse(selectedBook, selectedChapter);
+      const lastVerse = endVerse ? endVerse : startVerse;
       navigation.navigate('Memorization', {
         book: selectedBook,
         chapter: selectedChapter,
-        verse: parseInt(startVerse),
+        verse: startVerse,
         endVerse: lastVerse,
         fromSearch: true,
       });
-      saveToHistory(selectedBook, selectedChapter, parseInt(startVerse), lastVerse);
+      saveToHistory(selectedBook, selectedChapter, startVerse, lastVerse);
     }
   };
 
@@ -64,15 +64,15 @@ const SearchScreen = ({ navigation }) => {
           onValueChange={(itemValue) => {
             setSelectedBook(itemValue);
             setSelectedChapter(0);
-            setStartVerse('');
-            setEndVerse('');
+            setStartVerse(0);
+            setEndVerse(0);
             setErrors({ ...errors, book: false, chapter: false, verse: false });
           }}
           style={[styles.picker, errors.book && styles.errorPicker]}
         >
           <Picker.Item label={t('searchPage.selectBook')} value="" />
-          {books.map((book) => (
-            <Picker.Item key={book} label={book} value={book} />
+          {books.map((book, i) => (
+            <Picker.Item key={i} label={t(`bible.${book}`)} value={book} />
           ))}
         </Picker>
       </Animated.View>
@@ -83,8 +83,8 @@ const SearchScreen = ({ navigation }) => {
           selectedValue={selectedChapter}
           onValueChange={(itemValue) => {
               setSelectedChapter(itemValue);
-              setStartVerse('');
-              setEndVerse('');
+              setStartVerse(0);
+              setEndVerse(0);
               setErrors({ ...errors, chapter: false, verse: false });
           }}
           enabled={!!selectedBook}
@@ -92,7 +92,7 @@ const SearchScreen = ({ navigation }) => {
         >
           <Picker.Item label={t('searchPage.selectChapter')} value="" />
           {chapters.map((chapter) => (
-            <Picker.Item key={chapter} label={chapter} value={chapter} />
+            <Picker.Item key={chapter} label={chapter?.toString()} value={chapter} />
           ))}
         </Picker>
       </Animated.View>
@@ -103,7 +103,7 @@ const SearchScreen = ({ navigation }) => {
         selectedValue={startVerse}
         onValueChange={(itemValue) => {
             setStartVerse(itemValue);
-            setEndVerse('');
+            setEndVerse(0);
             setErrors({ ...errors, verse: false });
         }}
         enabled={!!selectedChapter}
@@ -111,7 +111,7 @@ const SearchScreen = ({ navigation }) => {
       >
         <Picker.Item label={t('searchPage.selectStartVerse')} value="" />
         {verses.map((verse) => (
-          <Picker.Item key={verse} label={verse.toString()} value={verse.toString()} />
+          <Picker.Item key={verse} label={verse?.toString()} value={verse?.toString()} />
         ))}
       </Picker>
       </Animated.View>
@@ -123,8 +123,8 @@ const SearchScreen = ({ navigation }) => {
         enabled={!!startVerse}
       >
         <Picker.Item label={t('searchPage.selectEndVerse')} value="" />
-        {verses.filter((v) => v >= parseInt(startVerse)).map((verse) => (
-          <Picker.Item key={verse} label={verse.toString()} value={verse.toString()} />
+        {verses.filter((v) => v! > startVerse).map((verse) => (
+          <Picker.Item key={verse} label={verse?.toString()} value={verse?.toString()} />
         ))}
       </Picker>
 
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   button: {
-    backgroundColor: '#007AFF',
+    backgroundColor: '#BFA58A',
     padding: 15,
     borderRadius: 5,
     marginTop: 20,

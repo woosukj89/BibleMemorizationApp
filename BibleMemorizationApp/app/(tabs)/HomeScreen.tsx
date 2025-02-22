@@ -1,13 +1,15 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
+import { initializeDatabase } from '@/db/databaseService';
 
 type RootStackParamList = {
   Home: undefined;
   SelectBook: undefined;
   Search: undefined;
   History: undefined;
+  Settings: undefined;
 };
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -17,29 +19,47 @@ interface HomeScreenProps {
 }
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-  const { t } = useTranslation();
+  const [isLoading, setIsLoading] = useState(true);
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    const loadDatabase = async () => {
+      try {
+        await initializeDatabase(i18n.resolvedLanguage!);
+        setIsLoading(false);
+      } catch (error) {
+        console.error('Failed to initialize database:', error);
+        setIsLoading(false);
+      }
+    };
+
+    loadDatabase();
+  }, []);
+
+  const renderButton = (label: string, onPress: () => void) => (
+    <TouchableOpacity
+      style={[styles.button, isLoading && styles.disabledButton]}
+      onPress={onPress}
+      disabled={isLoading}
+    >
+      <Text style={styles.buttonText}>{t(label)}</Text>
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{t('appName')}</Text>
+      {isLoading && (
+        <View style={styles.loadingIndicator}>
+          <ActivityIndicator size="small" color="#0000ff" />
+          <Text style={styles.loadingText}>{t('loadingDatabase')}</Text>
+        </View>
+      )}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('SelectBook')}
-        >
-          <Text style={styles.buttonText}>{t('selectChapter')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('Search')}
-        >
-          <Text style={styles.buttonText}>{t('searchVerses')}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => navigation.navigate('History')}
-        >
-          <Text style={styles.buttonText}>{t('history')}</Text>
-        </TouchableOpacity>
+        {renderButton('selectChapter', () => navigation.navigate('SelectBook'))}
+        {renderButton('searchVerses', () => navigation.navigate('Search'))}
+        {renderButton('history', () => navigation.navigate('History'))}
+        {renderButton('settings', () => navigation.navigate('Settings'))}
       </View>
     </SafeAreaView>
   );
@@ -61,7 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   button: {
-    backgroundColor: '#78A2CC',
+    backgroundColor: '#BFA58A',
     padding: 15,
     borderRadius: 5,
     marginBottom: 20,
@@ -71,6 +91,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
+  },
+  loadingIndicator: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginLeft: 5,
+    fontSize: 12,
+  },
+  disabledButton: {
+    opacity: 0.5,
   },
 });
 

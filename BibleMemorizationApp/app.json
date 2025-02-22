@@ -4,37 +4,40 @@
     "slug": "BibleMemorizationApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/bible.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "assets": ["./assets/bible.sqlite"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/playstore-icon.png",
+        "backgroundColor": "#FCC404"
       },
       "package": "com.joshuajang89.BibleMemorizationApp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/bible.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/bible.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#BFA58A"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "expo-asset",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true

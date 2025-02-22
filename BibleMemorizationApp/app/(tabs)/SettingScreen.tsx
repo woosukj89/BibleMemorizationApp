@@ -1,0 +1,88 @@
+import React, { useState, useEffect } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { RadioButton } from 'react-native-paper';
+
+// Assume we have a function to get available translations
+import { getAvailableTranslations, setTableName, tableNames } from '@/db/databaseService';
+
+const SettingsScreen: React.FC = () => {
+  const { t, i18n } = useTranslation();
+  const [selectedTranslation, setSelectedTranslation] = useState('');
+  const [availableTranslations, setAvailableTranslations] = useState<string[]>([]);
+
+  useEffect(() => {
+    loadAvailableTranslations();
+  }, [i18n.resolvedLanguage]);
+
+  const loadAvailableTranslations = async () => {
+    const translations = await getAvailableTranslations(i18n.resolvedLanguage!);
+    setAvailableTranslations(translations);
+    // Load previously selected translation or default to first available
+    const savedTranslation = await AsyncStorage.getItem('selected-translation');
+    setSelectedTranslation((savedTranslation?.substring(0,2) === i18n.resolvedLanguage && savedTranslation) || translations[0]);
+    setTableName(savedTranslation || translations[0])
+  };
+
+  const changeLanguage = async (lang: string) => {
+    await i18n.changeLanguage(lang);
+    await AsyncStorage.setItem('user-language', lang);
+  };
+
+  const changeTranslation = async (translation: string) => {
+    setSelectedTranslation(translation);
+    setTableName(translation);
+    await AsyncStorage.setItem('selected-translation', translation);
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <Text style={styles.sectionTitle}>{t('settingsPage.languageSettings')}</Text>
+      <RadioButton.Group onValueChange={changeLanguage} value={i18n.resolvedLanguage}>
+        <View style={styles.radioItem}>
+          <RadioButton value="en" />
+          <Text style={styles.radioLabel}>English</Text>
+        </View>
+        <View style={styles.radioItem}>
+          <RadioButton value="ko" />
+          <Text style={styles.radioLabel}>한국어</Text>
+        </View>
+      </RadioButton.Group>
+
+      <Text style={styles.sectionTitle}>{t('settingsPage.translations')}</Text>
+      <RadioButton.Group onValueChange={changeTranslation} value={selectedTranslation}>
+        {availableTranslations.map((translation) => (
+          <View key={translation} style={styles.radioItem}>
+            <RadioButton value={translation} />
+            <Text style={styles.radioLabel}>{tableNames[translation]}</Text>
+          </View>
+        ))}
+      </RadioButton.Group>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  radioItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  radioLabel: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
+});
+
+export default SettingsScreen;

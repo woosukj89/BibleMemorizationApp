@@ -11,19 +11,14 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({ difficulty, set
   const { t } = useTranslation();
   const difficulties = ['easy', 'medium', 'hard', 'full'];
 
-  const getBackgroundColor = (level: string) => {
-    switch (level) {
-      case 'easy':
-        return '#B8E6B8'; // Pastel Green
-      case 'medium':
-        return '#FFE5B4'; // Pastel Yellow
-      case 'hard':
-        return '#FFB3BA'; // Pastel Pink
-      case 'full':
-        return '#FF6B6B'; // Pastel Red
-      default:
-        return '#FFFFFF'; // White
-    }
+  const getBackgroundColor = (level: string, isSelected: boolean) => {
+    const colors = {
+      easy: { normal: '#C6E2C6', selected: '#B8E6B8' },
+      medium: { normal: '#FFF2CC', selected: '#FFE5B4' },
+      hard: { normal: '#FFC9C9', selected: '#FFB3BA' },
+      full: { normal: '#FF9999', selected: '#FF6B6B' },
+    };
+    return isSelected ? colors[level].selected : colors[level].normal;
   };
 
   return (
@@ -33,7 +28,11 @@ const DifficultySelector: React.FC<DifficultySelectorProps> = ({ difficulty, set
         {difficulties.map((level) => (
           <TouchableOpacity
             key={level}
-            style={[styles.button, { backgroundColor: getBackgroundColor(level) }, difficulty === level && styles.activeButton]}
+            style={[
+              styles.button,
+              { backgroundColor: getBackgroundColor(level, difficulty === level) },
+              difficulty === level && styles.activeButton
+            ]}
             onPress={() => setDifficulty(level)}
           >
             <Text style={styles.buttonText}>{t(`memorizationPage.${level}`)}</Text>
@@ -65,7 +64,7 @@ const styles = StyleSheet.create({
   },
   activeButton: {
     borderWidth: 2,
-    borderColor: '#000',
+    borderColor: '#808080', // Pastel gray color for the outline
   },
   buttonText: {
     fontSize: 14,
