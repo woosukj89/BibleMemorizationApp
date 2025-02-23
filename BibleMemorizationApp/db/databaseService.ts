@@ -49,6 +49,7 @@ export async function initializeDatabase(language: string) {
   db = await SQLite.openDatabaseAsync(dbName);
   const savedTranslation = await AsyncStorage.getItem('selected-translation');
   if (savedTranslation) {
+    console.log("Saved translation - ", savedTranslation);
     setTableName(savedTranslation);
   } else {
     setTableName((await getAvailableTranslations(language))[0])
@@ -56,13 +57,19 @@ export async function initializeDatabase(language: string) {
   return db;
 }
 
+export function getTableName() {
+  console.log("Returning tableName", tableName);
+    return tableName;
+}
+
 export function setTableName(version: string) {
     tableName = version as keyof typeof tableNames;
+  console.log("Table name is now", tableName);
 }
 
 export async function getAvailableTranslations(language: string) {
   if (!db) throw new Error('Database not initialized');
-  const rows = db.getAllSync(`SELECT name FROM sqlite_master WHERE type='table' and name LIKE ?`, `${language}_%`)
+  const rows = await db.getAllAsync(`SELECT name FROM sqlite_master WHERE type='table' and name LIKE ?`, `${language}_%`)
   return rows?.map(r => r.name);
 }
 

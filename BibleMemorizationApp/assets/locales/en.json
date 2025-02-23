@@ -1,10 +1,11 @@
 {
    "appName":"Bible Memorization",
-   "selectChapter":"Select a Chapter",
+   "selectChapter":"Find Chapter",
    "searchVerses":"Search Verses",
    "history":"History",
    "settings":"Settings",
    "loadingDatabase": "Loading Bible files...",
+   "currentVersion": "Current version: {{version}}",
    "bible": {
       "1": "Genesis",
       "2": "Exodus",
@@ -71,7 +72,7 @@
       "63": "2 John",
       "64": "3 John",
       "65": "Jude",
-      "66": "Revelation"
+      "66": "Revelations"
    },
    "selectChapterPage":{
       "selectBook":"Select a Book",
@@ -93,7 +94,9 @@
       "endVerse":"End Verse",
       "selectStartVerse":"Select start verse",
       "selectEndVerse":"Select end verse (optional)",
-      "search":"Search"
+      "search":"Search",
+      "oldTestament": "Old Testament",
+      "newTestament": "New Testament"
    },
    "historyPage":{
       "recentHistory":"Recent History",

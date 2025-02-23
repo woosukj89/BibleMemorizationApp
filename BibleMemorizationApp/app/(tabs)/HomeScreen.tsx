@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { initializeDatabase } from '@/db/databaseService';
+import { getTableName, initializeDatabase, tableNames } from '@/db/databaseService';
 
 type RootStackParamList = {
   Home: undefined;
@@ -20,6 +21,7 @@ interface HomeScreenProps {
 
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
+  const [currentVersion, setCurrentVersion] = useState('');
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
@@ -27,6 +29,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
       try {
         await initializeDatabase(i18n.resolvedLanguage!);
         setIsLoading(false);
+        setCurrentVersion(tableNames[getTableName()]);
       } catch (error) {
         console.error('Failed to initialize database:', error);
         setIsLoading(false);
@@ -35,6 +38,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
     loadDatabase();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setCurrentVersion(tableNames[getTableName()]);
+    }, []) // Add any dependencies here if needed
+  );
 
   const renderButton = (label: string, onPress: () => void) => (
     <TouchableOpacity
@@ -49,12 +58,16 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>{t('appName')}</Text>
-      {isLoading && (
-        <View style={styles.loadingIndicator}>
-          <ActivityIndicator size="small" color="#0000ff" />
-          <Text style={styles.loadingText}>{t('loadingDatabase')}</Text>
-        </View>
-      )}
+      <View style={styles.loadingIndicator}>
+        {isLoading ? (
+          <>
+            <ActivityIndicator size="small" color="#0000ff" />
+            <Text style={styles.loadingText}>{t('loadingDatabase')}</Text>
+          </>
+        ) : (
+          <Text style={styles.loadingText}>{t('currentVersion', { version: currentVersion })}</Text>
+        )}
+      </View>
       <View style={styles.buttonContainer}>
         {renderButton('selectChapter', () => navigation.navigate('SelectBook'))}
         {renderButton('searchVerses', () => navigation.navigate('Search'))}

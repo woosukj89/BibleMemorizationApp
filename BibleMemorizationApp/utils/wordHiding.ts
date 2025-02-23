@@ -4,7 +4,7 @@ interface WordObject {
 }
 
 export const hideWords = (text: string, difficulty: string): WordObject[] => {
-  const words = text.split(' ');
+  const words = text.match(/\S+/g) || [];
   let percentToHide: number;
 
   switch (difficulty) {
@@ -24,16 +24,33 @@ export const hideWords = (text: string, difficulty: string): WordObject[] => {
       percentToHide = 0.5;
   }
 
-  const wordsToHide = Math.max(1, difficulty == 'easy' ? Math.ceil(words.length * percentToHide) : Math.floor(words.length * percentToHide));
-  const hiddenIndices = new Set();
+  const wordHideable = (word: string) => 
+    word.length > 1 && /[^,.;!"'?<>~@#$%^&*()]+$/.test(word);
+
+  // Filter out words that shouldn't be hidden
+  const hideableWords = words.filter(word => 
+    wordHideable(word)
+  );
+
+  const wordsToHide = Math.max(1, difficulty === 'easy' 
+    ? Math.ceil(hideableWords.length * percentToHide) 
+    : Math.floor(hideableWords.length * percentToHide)
+  );
+
+  const hiddenIndices = new Set<number>();
 
   while (hiddenIndices.size < wordsToHide) {
-    const index = Math.floor(Math.random() * words.length);
+    const index = Math.floor(Math.random() * hideableWords.length);
     hiddenIndices.add(index);
   }
 
-  return words.map((word, index) => ({
-    word,
-    isHidden: hiddenIndices.has(index)
-  }));
+  let hideableIndex = 0;
+  return words.map(word => {
+    if (wordHideable(word)) {
+      const isHidden = hiddenIndices.has(hideableIndex);
+      hideableIndex++;
+      return { word, isHidden };
+    }
+    return { word, isHidden: false };
+  });
 };

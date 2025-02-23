@@ -1,5 +1,5 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 import HomeScreen from './HomeScreen';
 import MemorizationScreen from './MemorizationScreen';
 import SearchScreen from './SearchScreen';

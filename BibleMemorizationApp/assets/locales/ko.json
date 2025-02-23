@@ -5,6 +5,7 @@
    "history":"열람 내역",
    "settings":"설정",
    "loadingDatabase": "성경 파일 로딩 중",
+   "currentVersion": "현재 번역: {{version}}",
    "bible": {
       "1": "창세기",
       "2": "출애굽기",
@@ -93,7 +94,9 @@
       "endVerse":"마지막 구절",
       "selectStartVerse":"시작 구절 선택",
       "selectEndVerse":"마지막 구절 선택 (옵션)",
-      "search":"검색"
+      "search":"검색",
+      "oldTestament": "구약",
+      "newTestament": "신약"
    },
    "historyPage":{
       "recentHistory":"최근 검색 목록",

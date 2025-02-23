@@ -4,6 +4,8 @@ import { Picker } from '@react-native-picker/picker';
 import { saveToHistory } from '@/utils/history';
 import { useTranslation } from 'react-i18next';
 import { getBooks, getChapters, getLastVerseNumber, getVerseNumbers } from '@/db/databaseService';
+import GenericSelectionModal from '@/components/GenericSelectionModal';
+import HorizontalSelectionModal from '@/components/HorizontalSelectionModal';
 
 const SearchScreen = ({ navigation }) => {
   const [selectedBook, setSelectedBook] = useState('');
@@ -11,6 +13,10 @@ const SearchScreen = ({ navigation }) => {
   const [startVerse, setStartVerse] = useState(0);
   const [endVerse, setEndVerse] = useState(0);
   const [errors, setErrors] = useState({ book: false, chapter: false, verse: false });
+  const [bookModalVisible, setBookModalVisible] = useState(false);
+  const [chapterModalVisible, setChapterModalVisible] = useState(false);
+  const [startVerseModalVisible, setStartVerseModalVisible] = useState(false);
+  const [endVerseModalVisible, setEndVerseModalVisible] = useState(false);
   const { t } = useTranslation();
 
   const books = getBooks();
@@ -59,78 +65,101 @@ const SearchScreen = ({ navigation }) => {
     <ScrollView style={styles.container}>
       <Text style={styles.label}>{t('searchPage.book') + ':'}</Text>
       <Animated.View style={{ transform: [{ translateX: bookRef.current }] }}>
-        <Picker
-          selectedValue={selectedBook}
-          onValueChange={(itemValue) => {
-            setSelectedBook(itemValue);
-            setSelectedChapter(0);
-            setStartVerse(0);
-            setEndVerse(0);
-            setErrors({ ...errors, book: false, chapter: false, verse: false });
-          }}
-          style={[styles.picker, errors.book && styles.errorPicker]}
+        <TouchableOpacity 
+          style={[styles.picker, errors.book && styles.errorPicker]} 
+          onPress={() => setBookModalVisible(true)}
         >
-          <Picker.Item label={t('searchPage.selectBook')} value="" />
-          {books.map((book, i) => (
-            <Picker.Item key={i} label={t(`bible.${book}`)} value={book} />
-          ))}
-        </Picker>
+          <Text style={styles.pickerText}>{selectedBook ? t(`bible.${selectedBook}`) : t('searchPage.selectBook')}</Text>
+        </TouchableOpacity>
       </Animated.View>
-
       <Text style={styles.label}>{t('searchPage.chapter') + ':'}</Text>
       <Animated.View style={{ transform: [{ translateX: chapterRef.current }] }}>
-        <Picker
-          selectedValue={selectedChapter}
-          onValueChange={(itemValue) => {
-              setSelectedChapter(itemValue);
-              setStartVerse(0);
-              setEndVerse(0);
-              setErrors({ ...errors, chapter: false, verse: false });
-          }}
-          enabled={!!selectedBook}
-          style={[styles.picker, !!selectedBook && errors.chapter && styles.errorPicker]}
+        <TouchableOpacity 
+          style={[styles.picker, !!selectedBook && errors.chapter && styles.errorPicker]} 
+          onPress={() => setChapterModalVisible(true)}
+          disabled={!selectedBook}
         >
-          <Picker.Item label={t('searchPage.selectChapter')} value="" />
-          {chapters.map((chapter) => (
-            <Picker.Item key={chapter} label={chapter?.toString()} value={chapter} />
-          ))}
-        </Picker>
+          <Text style={[styles.pickerText, !selectedBook && styles.pickerDisabled]}>{selectedChapter ? selectedChapter : t('searchPage.selectChapter')}</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       <Animated.View style={{ transform: [{ translateX: verseRef.current }] }}>
       <Text style={styles.label}>{t('searchPage.startVerse') + ':'}</Text>
-      <Picker
-        selectedValue={startVerse}
-        onValueChange={(itemValue) => {
-            setStartVerse(itemValue);
-            setEndVerse(0);
-            setErrors({ ...errors, verse: false });
-        }}
-        enabled={!!selectedChapter}
-        style={[styles.picker, !!selectedChapter && errors.verse && styles.errorPicker]}
-      >
-        <Picker.Item label={t('searchPage.selectStartVerse')} value="" />
-        {verses.map((verse) => (
-          <Picker.Item key={verse} label={verse?.toString()} value={verse?.toString()} />
-        ))}
-      </Picker>
+        <TouchableOpacity 
+          style={[styles.picker, !!selectedChapter && errors.verse && styles.errorPicker]} 
+          onPress={() => setStartVerseModalVisible(true)}
+          disabled={!selectedChapter}
+        >
+          <Text style={[styles.pickerText, !selectedChapter && styles.pickerDisabled]}>
+            {startVerse ? startVerse : t('searchPage.selectStartVerse')}</Text>
+        </TouchableOpacity>
       </Animated.View>
 
       <Text style={styles.label}>{t('searchPage.endVerse') + ':'}</Text>
-      <Picker
-        selectedValue={endVerse}
-        onValueChange={(itemValue) => setEndVerse(itemValue)}
-        enabled={!!startVerse}
-      >
-        <Picker.Item label={t('searchPage.selectEndVerse')} value="" />
-        {verses.filter((v) => v! > startVerse).map((verse) => (
-          <Picker.Item key={verse} label={verse?.toString()} value={verse?.toString()} />
-        ))}
-      </Picker>
+        <TouchableOpacity 
+          style={styles.picker} 
+          onPress={() => setEndVerseModalVisible(true)}
+          disabled={!startVerse || startVerse >= verses.length}
+        >
+          <Text style={[styles.pickerText, (!startVerse || startVerse >= verses.length) && styles.pickerDisabled]}>
+            {endVerse ? endVerse : t('searchPage.selectEndVerse')}</Text>
+        </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={handleSearch}>
         <Text style={styles.buttonText}>{t('searchPage.search')}</Text>
       </TouchableOpacity>
+
+      <GenericSelectionModal
+        visible={bookModalVisible}
+        onClose={() => setBookModalVisible(false)}
+        onSelect={(book: string) => {
+          setSelectedBook(book);
+          setSelectedChapter(0);
+          setStartVerse(0);
+          setEndVerse(0);
+          setErrors({ ...errors, book: false, chapter: false, verse: false });
+        }}
+        values={books}
+        t={t}
+        getLabel={(book: string) => t(`bible.${book}`)}
+        headerLabels={[t('searchPage.oldTestament'), t('searchPage.newTestament')]}
+        maxPerColumn={39}
+        title={t('searchPage.selectBook')}
+      />
+      <HorizontalSelectionModal
+        visible={chapterModalVisible}
+        onClose={() => setChapterModalVisible(false)}
+        onSelect={(chapter: number) => {
+          setSelectedChapter(chapter);
+          setStartVerse(0);
+          setEndVerse(0);
+          setErrors({ ...errors, chapter: false, verse: false });
+        }}
+        values={chapters}
+        getLabel={(chapter: number) => chapter.toString()}
+        title={t('searchPage.selectChapter')}
+      />
+      <HorizontalSelectionModal
+        visible={startVerseModalVisible}
+        onClose={() => setStartVerseModalVisible(false)}
+        onSelect={(verse: number) => {
+          setStartVerse(verse);
+          setErrors({ ...errors, verse: false });
+        }}
+        values={verses}
+        getLabel={(verse: number) => verse.toString()}
+        title={t('searchPage.selectStartVerse')}
+      />
+      <HorizontalSelectionModal
+        visible={endVerseModalVisible}
+        onClose={() => setEndVerseModalVisible(false)}
+        onSelect={(verse: number) => {
+          setEndVerse(verse);
+        }}
+        values={verses.filter((v) => v! > startVerse)}
+        getLabel={(verse: number) => verse.toString()}
+        title={t('searchPage.selectEndVerse')}
+      />
     </ScrollView>
   );
 };
@@ -158,7 +187,14 @@ const styles = StyleSheet.create({
   picker: {
     backgroundColor: '#f0f0f0',
     borderRadius: 5,
-    marginBottom: 10,
+    marginVertical: 5,
+    padding: 15,
+  },
+  pickerText: {
+    fontSize: 16,
+  },
+  pickerDisabled: {
+    color: '#ccc'
   },
   errorPicker: {
     backgroundColor: '#FF6B6B',

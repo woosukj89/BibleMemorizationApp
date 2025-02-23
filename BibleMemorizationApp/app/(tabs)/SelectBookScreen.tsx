@@ -5,6 +5,7 @@ import { saveToHistory } from '@/utils/history';
 import { useTranslation } from 'react-i18next';
 import { getBooks, getChapters } from '@/db/databaseService';
 import { ButtonGroup } from '@rneui/themed';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type RootStackParamList = {
   SelectBook: undefined;
@@ -61,10 +62,14 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
         {sortedBooks.oldTestament.map((book, i) => (
           <TouchableOpacity
             key={i}
-            style={[styles.button, styles.oldButton]}
+            style={styles.button}
             onPress={() => setSelectedBook(book!)}
           >
-            <Text style={styles.buttonText}>{t(`bible.${book}`)}</Text>
+            <View style={styles.buttonTextContainer}>
+              <Text style={styles.buttonText} adjustsFontSizeToFit numberOfLines={1}>
+                {t(`bible.${book}`)}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -73,10 +78,14 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
         {sortedBooks.newTestament.map((book, i) => (
           <TouchableOpacity
             key={i + 39}
-            style={[styles.button, styles.newButton]}
+            style={styles.button}
             onPress={() => setSelectedBook(book!)}
           >
-            <Text style={styles.buttonText}>{t(`bible.${book}`)}</Text>
+            <View style={styles.buttonTextContainer}>
+              <Text style={[styles.buttonText, styles.buttonTextNew]} adjustsFontSizeToFit numberOfLines={1}>
+                {t(`bible.${book}`)}
+              </Text>
+            </View>
           </TouchableOpacity>
         ))}
       </View>
@@ -88,7 +97,7 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
       <TouchableOpacity style={styles.backButton} onPress={() => setSelectedBook(null)}>
         <Text style={styles.backButtonText}>{t('selectChapterPage.backToBooks')}</Text>
       </TouchableOpacity>
-      <Text style={styles.title}>{t('selectChapterPage.selectChapterFrom', { book: selectedBook})}</Text>
+      <Text style={styles.title}>{t('selectChapterPage.selectChapterFrom', { book: t(`bible.${selectedBook}`)})}</Text>
       <View style={styles.buttonContainer}>
         {getChapters(selectedBook!).map((chapter, i) => (
           <TouchableOpacity
@@ -107,16 +116,24 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      {selectedBook ? renderChapterSelection() : renderBookSelection()}
-    </ScrollView>
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
+        {selectedBook ? renderChapterSelection() : renderBookSelection()}
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+  },
   container: {
     flex: 1,
+  },
+  contentContainer: {
     padding: 20,
+    paddingBottom: 40,
   },
   title: {
     fontSize: 20,
@@ -139,18 +156,19 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     margin: 5,
-    minWidth: 80,
-  },
-  oldButton: {
-    backgroundColor: '#78A2CC'
-  },
-  newButton: {
-    backgroundColor: '#E96D6D',
+    width: '30%',
   },
   buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
+    flexWrap: 'wrap'
+  },
+  textOld: {
+    color: '#78A2CC',
+  },
+  textNew: {
+    color: '#FF6B6B',
   },
   backButton: {
     marginBottom: 20,
@@ -158,6 +176,11 @@ const styles = StyleSheet.create({
   backButtonText: {
     color: '#007AFF',
     fontSize: 18,
+  },
+  buttonTextContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   sortButtons: {
     flexDirection: 'row',
