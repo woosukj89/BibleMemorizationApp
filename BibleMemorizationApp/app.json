@@ -4,17 +4,17 @@
     "slug": "BibleMemorizationApp",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/bible.png",
+    "icon": "./assets/images/honible.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assets": ["./assets/bible.sqlite"],
+    "assetBundlePatterns": ["./assets/bible.sqlite"],
     "ios": {
       "supportsTablet": true
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/playstore-icon.png",
+        "foregroundImage": "./assets/images/honible.png",
         "backgroundColor": "#FCC404"
       },
       "package": "com.joshuajang89.BibleMemorizationApp"
@@ -22,14 +22,14 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/bible.png"
+      "favicon": "./assets/images/honible.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/bible.png",
+          "image": "./assets/images/SPLASH.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#BFA58A"

@@ -2,6 +2,7 @@ import * as SQLite from 'expo-sqlite';
 import * as FileSystem from 'expo-file-system';
 import { Asset } from 'expo-asset';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Observable } from '@/utils/Observable';
 
 let db: SQLite.SQLiteDatabase | null = null;
 
@@ -24,10 +25,10 @@ export const tableNames = {
     en_rsv: "RSV"
 }
 
-let tableName: keyof typeof tableNames;
+export const tableNameObservable = new Observable<keyof typeof tableNames | undefined>(undefined);
 
 export async function initializeDatabase(language: string) {
-  if (db) {
+  if (db && checkDbStatus()) {
     return db;
   }
   const dbName = 'bible.sqlite';
@@ -47,24 +48,34 @@ export async function initializeDatabase(language: string) {
   }
 
   db = await SQLite.openDatabaseAsync(dbName);
-  const savedTranslation = await AsyncStorage.getItem('selected-translation');
-  if (savedTranslation) {
-    console.log("Saved translation - ", savedTranslation);
-    setTableName(savedTranslation);
-  } else {
-    setTableName((await getAvailableTranslations(language))[0])
-  }
+  initializeTableName(language);
   return db;
 }
 
+function checkDbStatus() {
+    try {
+        db.getFirstSync('SELECT 1');
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
+async function initializeTableName(language: string) {
+  const savedTranslation = await AsyncStorage.getItem('selected-translation');
+  if (savedTranslation) {
+      setTableName(savedTranslation);
+  } else {
+      setTableName((await getAvailableTranslations(language))[0])
+  }
+}
+
 export function getTableName() {
-  console.log("Returning tableName", tableName);
-    return tableName;
+  return tableNameObservable.get();
 }
 
 export function setTableName(version: string) {
-    tableName = version as keyof typeof tableNames;
-  console.log("Table name is now", tableName);
+  tableNameObservable.set(version as keyof typeof tableNames);
 }
 
 export async function getAvailableTranslations(language: string) {
@@ -74,14 +85,14 @@ export async function getAvailableTranslations(language: string) {
 }
 
 export function getBooks() {
-  if (!db) throw new Error('Database not initialized');
-  const rows: schema[] = db.getAllSync(`SELECT DISTINCT book FROM ${tableName} ORDER BY CAST(id AS integer)`);
+  if (!db || !getTableName()) throw new Error('Database not initialized');
+  const rows: schema[] = db.getAllSync(`SELECT DISTINCT book FROM ${getTableName()} ORDER BY CAST(id AS integer)`);
   return rows.map(r => r.book)
 }
 
 export function getChapters(book: string) {
-  if (!db) throw new Error('Database not initialized');
-  let query = `SELECT DISTINCT chapter FROM ${tableName} WHERE book = ? ORDER BY chapter`
+  if (!db || !getTableName()) throw new Error('Database not initialized');
+  let query = `SELECT DISTINCT chapter FROM ${getTableName()} WHERE book = ? ORDER BY chapter`
 
   try {
     const rows: schema[] = db.getAllSync(query, book);
@@ -93,8 +104,8 @@ export function getChapters(book: string) {
 }
 
 export function getVerseNumbers(book: string, chapter: number) {
-  if (!db) throw new Error('Database not initialized');
-  let query = `SELECT verse FROM ${tableName} WHERE book = ? AND chapter = ? ORDER BY verse`
+  if (!db || !getTableName()) throw new Error('Database not initialized');
+  let query = `SELECT verse FROM ${getTableName()} WHERE book = ? AND chapter = ? ORDER BY verse`
 
   try {
     const rows: schema[] = db.getAllSync(query, book, chapter);
@@ -106,9 +117,9 @@ export function getVerseNumbers(book: string, chapter: number) {
 }
 
 export async function getVerses(book: string, chapter: number, startVerse?: number, endVerse?: number) {
-  if (!db) throw new Error('Database not initialized');
+  if (!db || !getTableName()) throw new Error('Database not initialized');
 
-  let query = `SELECT verse, text FROM ${tableName} WHERE book = ? AND chapter = ?`;
+  let query = `SELECT verse, text FROM ${getTableName()} WHERE book = ? AND chapter = ?`;
   const params = [book, chapter];
 
   if (startVerse) {
@@ -137,11 +148,11 @@ export async function getVerses(book: string, chapter: number, startVerse?: numb
 }
 
 export function getLastVerseNumber(book: string, chapter: number) {
-  if (!db) throw new Error('Database not initialized');
+  if (!db || !getTableName()) throw new Error('Database not initialized');
 
   try {
     const result: (schema | null) = db.getFirstSync(
-        `SELECT MAX(verse) as verse FROM ${tableName} WHERE book = ? AND chapter = ?`,
+        `SELECT MAX(verse) as verse FROM ${getTableName()} WHERE book = ? AND chapter = ?`,
         [book, chapter]
     );
 

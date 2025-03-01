@@ -6,8 +6,19 @@ import { RadioButton } from 'react-native-paper';
 
 // Assume we have a function to get available translations
 import { getAvailableTranslations, setTableName, tableNames } from '@/db/databaseService';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const SettingsScreen: React.FC = () => {
+type RootStackParamList = {
+    Settings: { versionChanged: boolean };
+}
+
+type SettingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Settings'>;
+
+interface SettingsScreenProps {
+    navigation: SettingScreenNavigationProp;
+}
+
+const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
   const [selectedTranslation, setSelectedTranslation] = useState('');
   const [availableTranslations, setAvailableTranslations] = useState<string[]>([]);
@@ -33,6 +44,7 @@ const SettingsScreen: React.FC = () => {
   const changeTranslation = async (translation: string) => {
     setSelectedTranslation(translation);
     setTableName(translation);
+    navigation.setParams({ versionChanged: true });
     await AsyncStorage.setItem('selected-translation', translation);
   };
 

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicat
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { getTableName, initializeDatabase, tableNames } from '@/db/databaseService';
+import { getTableName, initializeDatabase, tableNameObservable, tableNames } from '@/db/databaseService';
 
 type RootStackParamList = {
   Home: undefined;
@@ -25,11 +25,15 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
+    const subscribeVersionChanges = tableNameObservable.subscribe((newTableName) => {
+      if (newTableName) {
+        setCurrentVersion(tableNames[newTableName]);
+      }
+    });
     const loadDatabase = async () => {
       try {
         await initializeDatabase(i18n.resolvedLanguage!);
         setIsLoading(false);
-        setCurrentVersion(tableNames[getTableName()]);
       } catch (error) {
         console.error('Failed to initialize database:', error);
         setIsLoading(false);
@@ -37,13 +41,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     };
 
     loadDatabase();
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      setCurrentVersion(tableNames[getTableName()]);
-    }, []) // Add any dependencies here if needed
-  );
+    return subscribeVersionChanges;
+  }, [i18n.resolvedLanguage]);
 
   const renderButton = (label: string, onPress: () => void) => (
     <TouchableOpacity

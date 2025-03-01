@@ -41,7 +41,7 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
   }, [fullText, verse, difficulty]);
 
   const refreshVerse = () => {
-    const text = getVerseText(verse).replace(/\s+/g, ' ');
+    const text = getVerseText(verse);
     const hidden = hideWords(text, difficulty);
     setHiddenText(hidden);
   }
@@ -63,7 +63,7 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
     }
   };
 
-  const getVerseText = (verse: number) => fullText && verse in fullText ? fullText[verse].replace(/\s+/g, ' ') : "";
+  const getVerseText = (verse: number) => fullText && verse in fullText ? fullText[verse].replace(/\s+/g, ' ').replaceAll("\"\"", "\"") : "";
 
   const nextVerse = () => {
     setVerse(v => v + 1 in fullText ? v + 1 : v);
