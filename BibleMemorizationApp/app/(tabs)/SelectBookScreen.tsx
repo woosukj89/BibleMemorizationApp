@@ -21,7 +21,7 @@ interface SelectBookScreenProps {
 
 const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
   const [selectedBook, setSelectedBook] = useState<string | null>(null);
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [isAlphabetical, setIsAlphabetical] = useState(false);
   
   const sortedBooks = useMemo(() => {
@@ -53,6 +53,24 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
     </View>
   );
 
+  const getBooksFontSize = (book: string | undefined) => {
+    if (!book) return {};
+
+    const bookName = t(`bible.${book}`);
+    const length = bookName.length;
+
+    switch(i18n.resolvedLanguage) {
+      case 'ko':
+        if (length >= 8) return styles.buttonTextExtraSmall;
+        if (length >= 5) return styles.buttonTextSmall;
+        return {};
+      default:
+        if (length >= 14) return styles.buttonTextExtraSmall;
+        if (length >= 10) return styles.buttonTextSmall;
+        return {};
+    }
+  }
+
   const renderBookSelection = () => (
     <>
       <Text style={styles.title}>{t('selectChapterPage.selectBook')}</Text>
@@ -66,7 +84,8 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
             onPress={() => setSelectedBook(book!)}
           >
             <View style={styles.buttonTextContainer}>
-              <Text style={styles.buttonText} adjustsFontSizeToFit numberOfLines={1}>
+              <Text style={[styles.buttonText, getBooksFontSize(book)]}
+              numberOfLines={1}>
                 {t(`bible.${book}`)}
               </Text>
             </View>
@@ -82,7 +101,8 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
             onPress={() => setSelectedBook(book!)}
           >
             <View style={styles.buttonTextContainer}>
-              <Text style={[styles.buttonText, styles.buttonTextNew]} adjustsFontSizeToFit numberOfLines={1}>
+              <Text style={[styles.buttonText, getBooksFontSize(book)]}
+              numberOfLines={1}>
                 {t(`bible.${book}`)}
               </Text>
             </View>
@@ -153,16 +173,23 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: '#BFA58A',
-    padding: 10,
+    paddingVertical: 10,
     borderRadius: 5,
     margin: 5,
     width: '30%',
   },
-  buttonText: {
+   buttonText: {
     color: 'white',
     fontSize: 16,
     textAlign: 'center',
-    flexWrap: 'wrap'
+    flexWrap: 'wrap',
+    paddingHorizontal: 2, // Add horizontal padding
+  },
+  buttonTextSmall: {
+    fontSize: 14, // Minimum font size
+  },
+  buttonTextExtraSmall: {
+    fontSize: 12,
   },
   textOld: {
     color: '#78A2CC',

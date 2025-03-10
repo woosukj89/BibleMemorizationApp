@@ -30,10 +30,10 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   const loadAvailableTranslations = async () => {
     const translations = await getAvailableTranslations(i18n.resolvedLanguage!);
     setAvailableTranslations(translations);
-    // Load previously selected translation or default to first available
-    const savedTranslation = await AsyncStorage.getItem('selected-translation');
-    setSelectedTranslation((savedTranslation?.substring(0,2) === i18n.resolvedLanguage && savedTranslation) || translations[0]);
-    setTableName(savedTranslation || translations[0])
+    // Default to first available
+    setSelectedTranslation(translations[0]);
+    setTableName(translations[0]);
+    await AsyncStorage.setItem('selected-translation', translations[0]);
   };
 
   const changeLanguage = async (lang: string) => {
@@ -51,7 +51,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.sectionTitle}>{t('settingsPage.languageSettings')}</Text>
-      <RadioButton.Group onValueChange={changeLanguage} value={i18n.resolvedLanguage}>
+      <RadioButton.Group onValueChange={changeLanguage} value={i18n.resolvedLanguage!}>
         <View style={styles.radioItem}>
           <RadioButton value="en" />
           <Text style={styles.radioLabel}>English</Text>
