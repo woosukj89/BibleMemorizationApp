@@ -25,7 +25,7 @@ export const hideWords = (text: string, difficulty: string): WordObject[] => {
   }
 
   const wordHideable = (word: string) => 
-    difficulty == 'full' || (word.length > 1 && /[^,.;!"'?<>~@#$%^&*()]+$/.test(word));
+    !/^[,.:;!"'?<>~@#$%^&*()<>{}\[\]]+$/.test(word) && (difficulty == 'full' || word.length > 1);
 
   // Filter out words that shouldn't be hidden
   const hideableWords = words.filter(word => 

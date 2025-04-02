@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicator } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import { useFocusEffect } from 'expo-router';
 import { useTranslation } from 'react-i18next';
-import { getTableName, initializeDatabase, tableNameObservable, tableNames } from '@/db/databaseService';
+import { initializeDatabase, tableNameObservable, tableNames } from '@/db/databaseService';
 
 type RootStackParamList = {
   Home: undefined;
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    // fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 40,
   },

@@ -73,6 +73,10 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
     setVerse(v => v > (initialVerse || 1) ? v - 1 : v);
   };
 
+  const goToBeginning = () => {
+    setVerse(initialVerse || 1);
+  }
+
   const refreshHiddenWords = () => {
     refreshVerse()
   };
@@ -98,8 +102,15 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
         <TouchableOpacity onPress={previousVerse} hitSlop={{ top: 10, bottom: 10, left: 15, right: 10 }} disabled={!hasPrevious}>
             <Icon name="chevron-back" size={30} color={hasPrevious ? "#78A2CC" : "#CCCCCC"} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={nextVerse} hitSlop={{ top: 10, bottom: 10, left: 10, right: 15 }} disabled={!hasNext}>
-            <Icon name="chevron-forward" size={30} color={hasNext ? "#78A2CC" : "#CCCCCC"} />
+        <TouchableOpacity onPress={hasNext ? nextVerse : goToBeginning} hitSlop={{ top: 10, bottom: 10, left: 10, right: 15 }} >
+          {hasNext ? (
+            <Icon name="chevron-forward" size={30} color="#78A2CC" />
+          ) : (
+            <View style={{ flexDirection: 'row' }}>
+              <Icon name="chevron-back" size={30} color="#78A2CC" style={{ marginRight: -15 }} />
+              <Icon name="chevron-back" size={30} color="#78A2CC" />
+            </View>
+          )}
         </TouchableOpacity>
         <TouchableOpacity onPress={refreshHiddenWords} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
             <Icon name="refresh" size={30} color="#78A2CC" />
