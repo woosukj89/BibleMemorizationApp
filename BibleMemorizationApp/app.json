@@ -45,6 +45,14 @@
         {
           "androidAppId": "ca-app-pub-8936592815849801~2751856262"
         }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "targetSdkVersion": 35
+          }
+        }
       ]
     ],
     "experiments": {
