@@ -2,13 +2,15 @@
   "expo": {
     "name": "BibleMemorizationApp",
     "slug": "BibleMemorizationApp",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "orientation": "portrait",
     "icon": "./assets/images/honible.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "assetBundlePatterns": ["./assets/bible.sqlite"],
+    "assetBundlePatterns": [
+      "./assets/bible.sqlite"
+    ],
     "ios": {
       "supportsTablet": true
     },
@@ -37,7 +39,13 @@
       ],
       "expo-localization",
       "expo-asset",
-      "expo-sqlite"
+      "expo-sqlite",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-8936592815849801~2751856262"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

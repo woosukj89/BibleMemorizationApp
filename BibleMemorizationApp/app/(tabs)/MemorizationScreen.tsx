@@ -7,6 +7,7 @@ import DifficultySelector from '@/components/DifficultySelector';
 import VerseDisplay from '@/components/VerseDisplay';
 import { WordObject } from '@/components/VerseDisplay';
 import Icon from 'react-native-vector-icons/Ionicons';
+import AdBanner from '@/components/AdBanner';
 
 type RootStackParamList = {
   Memorization: { book: string; chapter: number, fromSearch: boolean; fromChapter: boolean; verse?: string; endVerse?: string; };
@@ -116,6 +117,7 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
             <Icon name="refresh" size={30} color="#78A2CC" />
         </TouchableOpacity>
       </View>
+      <AdBanner />
     </View>
   );
 };

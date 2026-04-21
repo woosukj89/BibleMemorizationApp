@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Animated } from 'react-native';
+import AdBanner from '@/components/AdBanner';
 import { Picker } from '@react-native-picker/picker';
 import { saveToHistory } from '@/utils/history';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +63,7 @@ const SearchScreen = ({ navigation }) => {
   };
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView style={styles.container}>
       <Text style={styles.label}>{t('searchPage.book') + ':'}</Text>
       <Animated.View style={{ transform: [{ translateX: bookRef.current }] }}>
@@ -161,6 +163,8 @@ const SearchScreen = ({ navigation }) => {
         title={t('searchPage.selectEndVerse')}
       />
     </ScrollView>
+    <AdBanner />
+    </View>
   );
 };
 

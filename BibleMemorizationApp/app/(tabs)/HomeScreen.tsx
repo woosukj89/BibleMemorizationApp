@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, SafeAreaView, ActivityIndicat
 import { StackNavigationProp } from '@react-navigation/stack';
 import { useTranslation } from 'react-i18next';
 import { initializeDatabase, tableNameObservable, tableNames } from '@/db/databaseService';
+import AdBanner from '@/components/AdBanner';
 
 type RootStackParamList = {
   Home: undefined;
@@ -55,23 +56,26 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>{t('appName')}</Text>
-      <View style={styles.loadingIndicator}>
-        {isLoading ? (
-          <>
-            <ActivityIndicator size="small" color="#0000ff" />
-            <Text style={styles.loadingText}>{t('loadingDatabase')}</Text>
-          </>
-        ) : (
-          <Text style={styles.loadingText}>{t('currentVersion', { version: currentVersion })}</Text>
-        )}
+      <View style={styles.content}>
+        <Text style={styles.title}>{t('appName')}</Text>
+        <View style={styles.loadingIndicator}>
+          {isLoading ? (
+            <>
+              <ActivityIndicator size="small" color="#0000ff" />
+              <Text style={styles.loadingText}>{t('loadingDatabase')}</Text>
+            </>
+          ) : (
+            <Text style={styles.loadingText}>{t('currentVersion', { version: currentVersion })}</Text>
+          )}
+        </View>
+        <View style={styles.buttonContainer}>
+          {renderButton('selectChapter', () => navigation.navigate('SelectBook'))}
+          {renderButton('searchVerses', () => navigation.navigate('Search'))}
+          {renderButton('history', () => navigation.navigate('History'))}
+          {renderButton('settings', () => navigation.navigate('Settings'))}
+        </View>
       </View>
-      <View style={styles.buttonContainer}>
-        {renderButton('selectChapter', () => navigation.navigate('SelectBook'))}
-        {renderButton('searchVerses', () => navigation.navigate('Search'))}
-        {renderButton('history', () => navigation.navigate('History'))}
-        {renderButton('settings', () => navigation.navigate('Settings'))}
-      </View>
+      <AdBanner />
     </SafeAreaView>
   );
 };
@@ -79,8 +83,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     padding: 20,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,

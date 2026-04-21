@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/Ionicons';
 import { useTranslation } from 'react-i18next';
+import AdBanner from '@/components/AdBanner';
 
 const HistoryScreen = ({ navigation }) => {
   const [history, setHistory] = useState([]);
@@ -71,6 +72,7 @@ const HistoryScreen = ({ navigation }) => {
       ) : (
         <Text style={styles.noHistoryText}>{t('historyPage.noHistory')}</Text>
       )}
+      <AdBanner />
     </View>
   );
 };

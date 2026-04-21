@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { getBooks, getChapters } from '@/db/databaseService';
 import { ButtonGroup } from '@rneui/themed';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AdBanner from '@/components/AdBanner';
 
 type RootStackParamList = {
   SelectBook: undefined;
@@ -140,6 +141,7 @@ const SelectBookScreen: React.FC<SelectBookScreenProps> = ({ navigation }) => {
       <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
         {selectedBook ? renderChapterSelection() : renderBookSelection()}
       </ScrollView>
+      <AdBanner />
     </SafeAreaView>
   );
 };

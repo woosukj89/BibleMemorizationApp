@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import AdBanner from '@/components/AdBanner';
 import { useTranslation } from 'react-i18next';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RadioButton } from 'react-native-paper';
@@ -49,6 +50,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
   };
 
   return (
+    <View style={{ flex: 1 }}>
     <ScrollView style={styles.container}>
       <Text style={styles.sectionTitle}>{t('settingsPage.languageSettings')}</Text>
       <RadioButton.Group onValueChange={changeLanguage} value={i18n.resolvedLanguage!}>
@@ -72,6 +74,8 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         ))}
       </RadioButton.Group>
     </ScrollView>
+    <AdBanner />
+    </View>
   );
 };
 
