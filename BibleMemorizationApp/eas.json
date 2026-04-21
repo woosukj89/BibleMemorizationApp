@@ -20,6 +20,15 @@
       "autoIncrement": true
     }
   },
+  "submit": {
+    "production": {
+      "android": {
+        "serviceAccountKeyPath": "C:\\Users\\woosu\\single-bindery-494012-j0-42f992c41cee.json",
+        "track": "internal",
+        "releaseStatus": "draft"
+      }
+    }
+  },
   "cli": {
     "appVersionSource": "remote"
   }
