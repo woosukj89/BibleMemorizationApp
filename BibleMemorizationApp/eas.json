@@ -24,7 +24,7 @@
     "production": {
       "android": {
         "serviceAccountKeyPath": "C:\\Users\\woosu\\single-bindery-494012-j0-42f992c41cee.json",
-        "track": "internal",
+        "track": "alpha",
         "releaseStatus": "draft"
       }
     }
