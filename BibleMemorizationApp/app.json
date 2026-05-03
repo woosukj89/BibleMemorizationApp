@@ -14,6 +14,11 @@
     "ios": {
       "supportsTablet": true
     },
+    "androidStatusBar": {
+      "translucent": true,
+      "barStyle": "dark-content",
+      "backgroundColor": "#00000000"
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/honible.png",

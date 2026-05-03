@@ -88,10 +88,12 @@ const MemorizationScreen: React.FC<MemorizationScreenProps> = ({ navigation }) =
         difficulty={difficulty}
         setDifficulty={setDifficulty}
       />
-      <VerseDisplay
-        words={showFullText ? getVerseText(verse).split(' ').map(word => ({ word, isHidden: false })) : hiddenText}
-        verseNumber={verse}
-      />
+      <View style={{ flex: 1 }}>
+        <VerseDisplay
+          words={showFullText ? getVerseText(verse).split(' ').map(word => ({ word, isHidden: false })) : hiddenText}
+          verseNumber={verse}
+        />
+      </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
             onPressIn={() => setShowFullText(true)}

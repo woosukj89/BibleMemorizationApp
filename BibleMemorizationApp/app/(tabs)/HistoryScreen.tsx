@@ -65,12 +65,15 @@ const HistoryScreen = ({ navigation }) => {
       <Text style={styles.title}>{t('historyPage.recentHistory')}</Text>
       {history.length > 0 ? (
         <FlatList
+          style={{ flex: 1 }}
           data={history}
           renderItem={renderHistoryItem}
           keyExtractor={(item, index) => index.toString()}
         />
       ) : (
-        <Text style={styles.noHistoryText}>{t('historyPage.noHistory')}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.noHistoryText}>{t('historyPage.noHistory')}</Text>
+        </View>
       )}
       <AdBanner />
     </View>
